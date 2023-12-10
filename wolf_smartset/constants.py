@@ -66,6 +66,15 @@ TAB_NAME = 'TabName'
 
 VALUE_ID = 'ValueId'
 
+GROUP = 'Group'
+
+GROUP_REPLACEMENTS = [
+    ('Wärmeerzeuger', 'HG'),
+    ('Kaskadenmodul', 'KM'),
+    ('Mischerkreis', 'MX'),
+    ('Warmwasser', 'WW'),
+]
+
 SYSTEM_LIST = 'SystemList'
 
 GATEWAY_STATE = 'GatewayState'

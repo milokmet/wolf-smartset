@@ -3,12 +3,14 @@ from typing import Union
 
 import httpx
 import logging
+import re
 from httpx import Headers
 
 from wolf_smartset.constants import BASE_URL, ID, GATEWAY_ID, NAME, SYSTEM_ID, MENU_ITEMS, TAB_VIEWS, BUNDLE_ID, \
     BUNDLE, VALUE_ID_LIST, GUI_ID_CHANGED, SESSION_ID, VALUE_ID, VALUE, STATE, VALUES, PARAMETER_ID, UNIT, \
     CELSIUS_TEMPERATURE, BAR, PERCENTAGE, LIST_ITEMS, DISPLAY_TEXT, PARAMETER_DESCRIPTORS, TAB_NAME, HOUR, \
-    LAST_ACCESS, ERROR_CODE, ERROR_TYPE, ERROR_MESSAGE, ERROR_READ_PARAMETER, SYSTEM_LIST, GATEWAY_STATE, IS_ONLINE
+    LAST_ACCESS, ERROR_CODE, ERROR_TYPE, ERROR_MESSAGE, ERROR_READ_PARAMETER, SYSTEM_LIST, GATEWAY_STATE, IS_ONLINE,\
+    GROUP, GROUP_REPLACEMENTS
 from wolf_smartset.create_session import create_session
 from wolf_smartset.helpers import bearer_header
 from wolf_smartset.models import Temperature, Parameter, SimpleParameter, Device, Pressure, ListItemParameter, \
@@ -146,6 +148,11 @@ class WolfClient:
     def _map_parameter(parameter: dict, parent: str) -> Parameter:
         value_id = parameter[VALUE_ID]
         name = parameter[NAME]
+        if GROUP in parameter:
+            group = re.sub(r'^\d+_', '', parameter[GROUP])
+            for old_str, new_str in GROUP_REPLACEMENTS:
+                group = group.replace(old_str, new_str)
+            name = "{} {}".format(group, parameter[NAME])
         parameter_id = parameter[PARAMETER_ID]
         if UNIT in parameter:
             unit = parameter[UNIT]
